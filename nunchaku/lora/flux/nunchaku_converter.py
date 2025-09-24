@@ -862,6 +862,15 @@ def to_nunchaku(
         else:
             assert isinstance(dtype, torch.dtype)
 
+        all_turing = True
+        from nunchaku.utils import is_turing
+        for i in range(torch.cuda.device_count()):
+            if not is_turing(f"cuda:{i}"):
+                all_turing = False
+        print(f"baiwt all_turing is {all_turing}...")
+        if all_turing:
+            dtype = torch.float16
+
         converted = convert_to_nunchaku_flux_lowrank_dict(
             base_model=orig_state_dict, lora=extra_lora_dict, default_dtype=dtype
         )
